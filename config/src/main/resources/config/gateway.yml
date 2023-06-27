@@ -1,0 +1,21 @@
+eureka:
+  client: # !!! I say gateway is a eureka client
+    serviceUrl: #!!! I will give information about the server of this client
+      defaultZone: http://localhost:8097/eureka
+  # !!! Above, we are telling the discovery server port (which it will be registered)
+
+  # !!! Since all requests will come to the gateway first and then
+  # go to the relevant service section, we introduce all services to the gateway:
+spring:
+  cloud:
+    gateway:
+      routes: # !!! I say that I will set the routing rules
+        - id: carModule
+          uri: lb://car-service # lb: load-balance - For example, if a server crashes, it redirects to its backup.
+          predicates:
+            - Path=/car/**
+
+        - id: logModule
+          uri: lb://log-service
+          predicates:
+            - Path=/log/**
